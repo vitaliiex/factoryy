@@ -1,78 +1,101 @@
-﻿namespace FabricPriclad
+﻿namespace Fabric
 {
-    interface ILang
+
+    public abstract class Acer
     {
-        void Display();
+        public abstract void OS();
     }
-    class L1 : ILang
+
+    public abstract class Lenovo
     {
-        public void Display()
+        public abstract void OS();
+    }
+    public class AWin : Acer
+    {
+        public override void OS()
         {
-            Console.WriteLine("Мова програмування C#");
+            Console.WriteLine("Acer має операційну систему Windows.");
         }
     }
-    class L2 : ILang
+
+    public class LWin : Lenovo
     {
-        public void Display()
+        public override void OS()
         {
-            Console.WriteLine("Мова програмування Python");
+            Console.WriteLine("Lenovo має операційну систему Windows.");
         }
     }
-    class L3 : ILang
+    public abstract class OSFactory
     {
-        public void Display()
+        public abstract Acer CreateAcer();
+        public abstract Lenovo CreateLenovo();
+    }
+
+    public class WindowsOsFactory : OSFactory
+    {
+        public override Acer CreateAcer()
         {
-            Console.WriteLine("Мова програмування Java");
+            return new AWin();
+        }
+
+        public override Lenovo CreateLenovo()
+        {
+            return new LWin();
         }
     }
-    interface IFactory
+
+    public class LinuxOsFactory : OSFactory
     {
-        ILang CreateLang();
-    }
-    class L1Factory : IFactory
-    {
-        public ILang CreateLang()
+        public override Acer CreateAcer()
         {
-            return new L1();
+            return new ALin();
+        }
+
+        public override Lenovo CreateLenovo()
+        {
+            return new LLin();
         }
     }
-    class L2Factory : IFactory
+    public class ALin : Acer
     {
-        public ILang CreateLang()
+        public override void OS()
         {
-            return new L2();
+            Console.WriteLine("Acer має операційну систему Linux.");
         }
     }
-    class L3Factory : IFactory
+
+    public class LLin : Lenovo
     {
-        public ILang CreateLang()
+        public override void OS()
         {
-            return new L3();
+            Console.WriteLine("Lenovo має операційну систему Linux.");
+        }
+    }
+    class User
+    {
+        public void CreateOS(OSFactory factory)
+        {
+            var acer = factory.CreateAcer();
+            var lenovo = factory.CreateLenovo();
+
+            acer.OS();
+            lenovo.OS();
         }
     }
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.Write("Введіть число 1,2 або 3: ");
-            int x = Convert.ToInt32(Console.ReadLine());
-            switch (x)
-            {
-                case 1:
-                    IFactory factory = new L1Factory();
-                    ILang lang = factory.CreateLang();
-                    lang.Display();
-                    break;
-                case 2:
-                    IFactory factory2 = new L2Factory();
-                    ILang lang2 = factory2.CreateLang();
-                    lang2.Display(); break;
-                case 3:
-                    IFactory factory3 = new L3Factory();
-                    ILang lang3 = factory3.CreateLang();
-                    lang3.Display(); break;
-                default: Console.WriteLine("Ni"); break;
-            }
+            WindowsOsFactory WF = new WindowsOsFactory();
+            LinuxOsFactory LF = new LinuxOsFactory();
+
+            User client = new User();
+
+            Console.WriteLine("Операційна система Windows : ");
+            client.CreateOS(WF);
+
+            Console.WriteLine("Операційна система Linux : ");
+            client.CreateOS(LF);
         }
     }
 }
